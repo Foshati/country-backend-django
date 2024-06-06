@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+  </head>
+  <body>
+    <h1>Welcome to Home Page</h1>
+
+    <!-- اضافه کردن فرم -->
+    <form method="post" id="address-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Submit</button>
+    </form>
+
+    <!-- جاوااسکریپت برای بارگیری لیست شهرها بر اساس کشور -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $('#id_country').change(function () {
+          var countryId = $(this).val()
+          $.ajax({
+            url: '{% url "load_cities" %}',
+            data: {
+              country: countryId
+            },
+            dataType: 'json',
+            success: function (data) {
+              var citiesSelect = $('#id_city')
+              citiesSelect.empty()
+              $.each(data, function (index, city) {
+                citiesSelect.append('<option value="' + city.id + '">' + city.name + '</option>')
+              })
+            }
+          })
+        })
+      })
+    </script>
+  </body>
+</html>
